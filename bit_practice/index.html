@@ -19,7 +19,7 @@
         </div>
     </section>
     <h2>マスクパターンを2進数で入力してください</h2>
-    <input type="text" name="maskPattern" id="maskPattern">
+    <input type="text" name="inputMask" id="inputMask" maxlength = "24">
     <h2>論理演算子を選択してください</h2>
     <ul>
         <li>AND</li>
@@ -27,14 +27,20 @@
         <li>NOT</li>
         <li>XOR</li>
     </ul>
-    <p>カラーコード</p>
-    <p></p>
-    <p></p>
-    <p></p>
-    <p>マスクパターン</p>
-    <p></p>
-    <p></p>
-    <p></p>
+
+    <div class="colorPattern">
+        <p>カラーコード：</p>
+        <p id="colorBitRed"></p>
+        <p id="colorBitBlue"></p>
+        <p id="colorBitGreen"></p>
+    </div>
+
+    <div class="colorPattern">
+        <p>マスクパターン：</p>
+        <p id="maskBitRed"></p>
+        <p id="maskBitBlue"></p>
+        <p id="maskBitGreen"></p>
+    </div>
     <p>演算結果</p>
     <p></p>
     <p></p>

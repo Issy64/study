@@ -31,3 +31,13 @@ ul li {
     padding: 10px;
     border-radius: 1rem;
 }
+
+#inputMask {
+    width: 200px;
+    text-align: center;
+}
+
+.colorPattern p{
+    display: inline-block;
+    text-align: right;
+}
