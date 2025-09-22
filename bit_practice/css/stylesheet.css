@@ -1,0 +1,33 @@
+h1,
+h2,
+p,
+ul,
+li {
+    text-decoration: none;
+    list-style: none;
+}
+
+body {
+    text-align: center;
+}
+
+ul li {
+    display: inline-block;
+    border: 1px #000 solid;
+    width: 50px;
+    text-align: center;
+    background-color: #cfcfcf;
+}
+
+.picking {
+    display: inline-block;
+    padding: 5rem;
+    border-radius: 1rem;
+}
+
+.window {
+    background-color: #cfcfcf;
+    display: inline-block;
+    padding: 10px;
+    border-radius: 1rem;
+}
