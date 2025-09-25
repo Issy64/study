@@ -1,3 +1,5 @@
+//リファクタリング① => 繰り返し使ってる煩雑な数値変換は関数にまとめてスッキリ見せる
+
 const colorPicker = document.querySelector("#colorPicker");
 const colorText = document.querySelector("#colorText");
 const pickingBackgroundColor = document.querySelector(".picking");
@@ -6,13 +8,20 @@ const colorBitBlue = document.querySelector("#colorBitBlue");
 const colorBitGreen = document.querySelector("#colorBitGreen");
 
 colorPicker.addEventListener("input", () => {
-    const hexToBinary = colorPicker.value.substr(1);
+    //カラーコードの値から#を抜き出して取得する
+    const colorHex = colorPicker.value.substr(1);
     //取得したカラーコードの16進数文字列を2進数文字列に変換する。
     //24bitのままだと桁ズレが怖いので8bitずつ処理する。
-    //もう少し簡単な記述はなかったものか…
-    const redBitBin = parseInt(hexToBinary.slice(0, 2), 16).toString(2).padStart(8, "0");
-    const blueBitBin = parseInt(hexToBinary.slice(2, 4), 16).toString(2).padStart(8, "0");
-    const greenBitBin = parseInt(hexToBinary.slice(4, 6), 16).toString(2).padStart(8, "0");
+    //関数化して役割を切り分ける
+    const hexToBinary = (hex, sliceStart, sliceEnd) => {
+        const hSlice = hex.slice(sliceStart, sliceEnd);//16進数を指定ビットで切り取る
+        const htb = parseInt(hSlice, 16).toString(2);//16進数文字列 -> int型 -> 2進数文字列
+        return htb.padStart(8, "0");//2進数文字列を8bit表示を保証して返す
+    };
+
+    const redBitBin = hexToBinary(colorHex, 0, 2);
+    const blueBitBin = hexToBinary(colorHex, 2, 4);
+    const greenBitBin = hexToBinary(colorHex, 4, 6);
     // console.log(redBitBin);
     // console.log(blueBitBin);
     // console.log(greenBitBin);
@@ -62,59 +71,59 @@ bitCalcs.forEach(function (bitCalc) {
         let r = "";
         let b = "";
         let g = "";
+
+        const andCalc = (a, b) => {
+            const ac = parseInt(a, 2) & parseInt(b, 2);//両ビットパターンもnumber型に変換してAND演算
+            return ac.toString(2).padStart(8, "0");//8bitの出力を保証して返す
+        };
+        const orCalc = (a, b) => {
+            const oc = parseInt(a, 2) | parseInt(b, 2);
+            return oc.toString(2).padStart(8, "0");
+        };
+        const xorCalc = (a, b) => {
+            const xc = parseInt(a, 2) ^ parseInt(b, 2);
+            return xc.toString(2).padStart(8, "0");
+        };
+        const notCalc = (a) => {
+            const bi = BigInt("0b" + a);//BigIntで2進数文字列を読み込む
+            const nbi = ~bi & ((1n << BigInt(8)) - 1n);//読み込んだ数値を反転し、符号ビットを無視するため、11111111でAND処理
+            return nbi.toString(2).padStart(8,"0");
+        };
+
         switch (events.target.id) {
             case "and":
                 // console.log(colorBitRed.textContent);
                 // console.log(maskBitRed.textContent);
                 // Red bit
-                const resultAndRed = parseInt(colorBitRed.textContent, 2) & parseInt(maskBitRed.textContent, 2);
-                r = resultAndRed.toString(2).padStart(8, "0");
+                r = andCalc(colorBitRed.textContent, maskBitRed.textContent);
                 // Blue bit
-                const resultAndBlue = parseInt(colorBitBlue.textContent, 2) & parseInt(maskBitBlue.textContent, 2);
-                b = resultAndBlue.toString(2).padStart(8, "0");
+                b = andCalc(colorBitBlue.textContent, maskBitBlue.textContent);
                 // Green bit
-                const resultAndGreen = parseInt(colorBitGreen.textContent, 2) & parseInt(maskBitGreen.textContent, 2);
-                g = resultAndGreen.toString(2).padStart(8, "0");
+                g = andCalc(colorBitGreen.textContent, maskBitGreen.textContent);
                 break;
             case "or":
                 // Red bit
-                const resultOrRed = parseInt(colorBitRed.textContent, 2) | parseInt(maskBitRed.textContent, 2);
-                r = resultOrRed.toString(2).padStart(8, "0");
+                r = orCalc(colorBitRed.textContent, maskBitRed.textContent);
                 // Blue bit
-                const resultOrBlue = parseInt(colorBitBlue.textContent, 2) | parseInt(maskBitBlue.textContent, 2);
-                b = resultOrBlue.toString(2).padStart(8, "0");
+                b = orCalc(colorBitBlue.textContent, maskBitBlue.textContent);
                 // Green bit
-                const resultOrGreen = parseInt(colorBitGreen.textContent, 2) | parseInt(maskBitGreen.textContent, 2);
-                g = resultOrGreen.toString(2).padStart(8, "0");
+                g = orCalc(colorBitGreen.textContent, maskBitGreen.textContent);
                 break;
             case "not":
                 // Red bit
-                //ここの記述は再度理解のため要検証
-                const sRedBig = BigInt("0b" + colorBitRed.textContent);
-                const tRedBig = ~sRedBig & ((1n << BigInt(8)) - 1n);
-                const resultNotRed = tRedBig.toString(2).padStart(8, "0");
-                r = resultNotRed;
+                r = notCalc(colorBitRed.textContent);
                 // Blue bit
-                const sBlueBig = BigInt("0b" + colorBitBlue.textContent);
-                const tBlueBig = ~sBlueBig & ((1n << BigInt(8)) - 1n);
-                const resultNotBlue = tBlueBig.toString(2).padStart(8, "0");
-                b = resultNotBlue;
+                b = notCalc(colorBitBlue.textContent);
                 // Green bit
-                const sGreenBig = BigInt("0b" + colorBitGreen.textContent);
-                const tGreenBig = ~sGreenBig & ((1n << BigInt(8)) - 1n);
-                const resultNotGreen = tGreenBig.toString(2).padStart(8, "0");
-                g = resultNotGreen;
+                g = notCalc(colorBitGreen.textContent);
                 break;
             case "xor":
                 // Red bit
-                const resultXorRed = parseInt(colorBitRed.textContent, 2) ^ parseInt(maskBitRed.textContent, 2);
-                r = resultXorRed.toString(2).padStart(8, "0");
+                r = xorCalc(colorBitRed.textContent, maskBitRed.textContent);
                 // Blue bit
-                const resultXorBlue = parseInt(colorBitBlue.textContent, 2) ^ parseInt(maskBitBlue.textContent, 2);
-                b = resultXorBlue.toString(2).padStart(8, "0");
+                b = xorCalc(colorBitBlue.textContent, maskBitBlue.textContent);
                 // Green bit
-                const resultXorGreen = parseInt(colorBitGreen.textContent, 2) ^ parseInt(maskBitGreen.textContent, 2);
-                g = resultXorGreen.toString(2).padStart(8, "0");
+                g = xorCalc(colorBitGreen.textContent, maskBitGreen.textContent);
                 break;
             default:
                 console.log("I have no idea...");
@@ -124,10 +133,10 @@ bitCalcs.forEach(function (bitCalc) {
         resultBitGreen.textContent = g;
 
         resultBit.textContent = r + b + g;
-        const bthRed = parseInt(r,2).toString(16).padStart(2,"0");
-        const bthBlue = parseInt(b,2).toString(16).padStart(2,"0");
-        const bthGreen = parseInt(g,2).toString(16).padStart(2,"0");
-        const bth = "#"+bthRed+bthBlue+bthGreen;
+        const bthRed = parseInt(r, 2).toString(16).padStart(2, "0");
+        const bthBlue = parseInt(b, 2).toString(16).padStart(2, "0");
+        const bthGreen = parseInt(g, 2).toString(16).padStart(2, "0");
+        const bth = "#" + bthRed + bthBlue + bthGreen;
         // console.log(bth);
         bgColor.style.backgroundColor = bth;
         bgColor.style.fontColor = "#cfcfcf"
