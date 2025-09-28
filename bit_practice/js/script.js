@@ -1,13 +1,14 @@
 //リファクタリング① => 繰り返し使ってる煩雑な数値変換は関数にまとめてスッキリ見せる
 
 const colorPicker = document.querySelector("#colorPicker");
-const colorText = document.querySelector("#colorText");
+const colorPickBin = document.querySelector("#colorPickBin");
+const colorPickHex = document.querySelector("#colorPickHex");
 const pickingBackgroundColor = document.querySelector(".picking");
 const colorBitRed = document.querySelector("#colorBitRed");
-const colorBitBlue = document.querySelector("#colorBitBlue");
 const colorBitGreen = document.querySelector("#colorBitGreen");
+const colorBitBlue = document.querySelector("#colorBitBlue");
 
-colorPicker.addEventListener("input", () => {
+const colorPickerAction = () => {
     //カラーコードの値から#を抜き出して取得する
     const colorHex = colorPicker.value.substr(1);
     //取得したカラーコードの16進数文字列を2進数文字列に変換する。
@@ -20,39 +21,45 @@ colorPicker.addEventListener("input", () => {
     };
 
     const redBitBin = hexToBinary(colorHex, 0, 2);
-    const blueBitBin = hexToBinary(colorHex, 2, 4);
-    const greenBitBin = hexToBinary(colorHex, 4, 6);
+    const greenBitBin = hexToBinary(colorHex, 2, 4);
+    const blueBitBin = hexToBinary(colorHex, 4, 6);
     // console.log(redBitBin);
     // console.log(blueBitBin);
     // console.log(greenBitBin);
-    const colorBitBin = redBitBin + " " + blueBitBin + " " + greenBitBin;
+    const colorBitBin = redBitBin + " " + greenBitBin + " " + blueBitBin;
 
-    colorText.textContent = colorBitBin;
+    colorPickBin.textContent = colorBitBin;
+    colorPickHex.textContent = colorPicker.value;
     pickingBackgroundColor.style.backgroundColor = colorPicker.value;
 
     colorBitRed.textContent = redBitBin;
-    colorBitBlue.textContent = blueBitBin;
     colorBitGreen.textContent = greenBitBin;
-});
+    colorBitBlue.textContent = blueBitBin;
+};
+
+colorPicker.addEventListener("input", colorPickerAction);
 
 const inputMask = document.querySelector("#inputMask");
 const maskBitRed = document.querySelector("#maskBitRed");
-const maskBitBlue = document.querySelector("#maskBitBlue");
 const maskBitGreen = document.querySelector("#maskBitGreen");
+const maskBitBlue = document.querySelector("#maskBitBlue");
 
-inputMask.addEventListener("input", () => {
+
+const maskBitAction = () => {
     const maskBin = inputMask.value;
     // console.log(maskBin);
     const maskRed = maskBin.slice(0, 8);
-    const maskBlue = maskBin.slice(8, 16);
-    const maskGreen = maskBin.slice(16, 24);
+    const maskGreen = maskBin.slice(8, 16);
+    const maskBlue = maskBin.slice(16, 24);
     // console.log(maskRed);
     // console.log(maskBlue);
     // console.log(maskGreen);
     maskBitRed.textContent = maskRed;
-    maskBitBlue.textContent = maskBlue;
     maskBitGreen.textContent = maskGreen;
-});
+    maskBitBlue.textContent = maskBlue;
+};
+
+inputMask.addEventListener("input", maskBitAction);
 
 const bitCalcs = document.querySelectorAll(".bitCalcs");
 const bitAnd = document.querySelector("#and");
@@ -60,17 +67,19 @@ const bitOR = document.querySelector("#or");
 const bitNot = document.querySelector("#not");
 const bitXor = document.querySelector("#xor");
 const resultBitRed = document.querySelector("#maskedBitRed");
-const resultBitBlue = document.querySelector("#maskedBitBlue");
 const resultBitGreen = document.querySelector("#maskedBitGreen");
-const resultBit = document.querySelector("#maskedBit");
+const resultBitBlue = document.querySelector("#maskedBitBlue");
+const resultBitBin = document.querySelector("#maskedBitBin");
+const resultBitHex = document.querySelector("#maskedBitHex");
 const bgColor = document.querySelector("#bgColor");
+const result = document.querySelector(".result");
 
 bitCalcs.forEach(function (bitCalc) {
     bitCalc.addEventListener("click", (events) => {
         // console.log("push!");
         let r = "";
-        let b = "";
         let g = "";
+        let b = "";
 
         const andCalc = (a, b) => {
             const ac = parseInt(a, 2) & parseInt(b, 2);//両ビットパターンもnumber型に変換してAND演算
@@ -87,7 +96,7 @@ bitCalcs.forEach(function (bitCalc) {
         const notCalc = (a) => {
             const bi = BigInt("0b" + a);//BigIntで2進数文字列を読み込む
             const nbi = ~bi & ((1n << BigInt(8)) - 1n);//読み込んだ数値を反転し、符号ビットを無視するため、11111111でAND処理
-            return nbi.toString(2).padStart(8,"0");
+            return nbi.toString(2).padStart(8, "0");
         };
 
         switch (events.target.id) {
@@ -96,50 +105,54 @@ bitCalcs.forEach(function (bitCalc) {
                 // console.log(maskBitRed.textContent);
                 // Red bit
                 r = andCalc(colorBitRed.textContent, maskBitRed.textContent);
-                // Blue bit
-                b = andCalc(colorBitBlue.textContent, maskBitBlue.textContent);
                 // Green bit
                 g = andCalc(colorBitGreen.textContent, maskBitGreen.textContent);
+                // Blue bit
+                b = andCalc(colorBitBlue.textContent, maskBitBlue.textContent);
                 break;
             case "or":
                 // Red bit
                 r = orCalc(colorBitRed.textContent, maskBitRed.textContent);
-                // Blue bit
-                b = orCalc(colorBitBlue.textContent, maskBitBlue.textContent);
                 // Green bit
                 g = orCalc(colorBitGreen.textContent, maskBitGreen.textContent);
+                // Blue bit
+                b = orCalc(colorBitBlue.textContent, maskBitBlue.textContent);
                 break;
             case "not":
                 // Red bit
                 r = notCalc(colorBitRed.textContent);
-                // Blue bit
-                b = notCalc(colorBitBlue.textContent);
                 // Green bit
                 g = notCalc(colorBitGreen.textContent);
+                // Blue bit
+                b = notCalc(colorBitBlue.textContent);
                 break;
             case "xor":
                 // Red bit
                 r = xorCalc(colorBitRed.textContent, maskBitRed.textContent);
-                // Blue bit
-                b = xorCalc(colorBitBlue.textContent, maskBitBlue.textContent);
                 // Green bit
                 g = xorCalc(colorBitGreen.textContent, maskBitGreen.textContent);
+                // Blue bit
+                b = xorCalc(colorBitBlue.textContent, maskBitBlue.textContent);
                 break;
             default:
                 console.log("I have no idea...");
         };
         resultBitRed.textContent = r;
-        resultBitBlue.textContent = b;
         resultBitGreen.textContent = g;
+        resultBitBlue.textContent = b;
 
-        resultBit.textContent = r + b + g;
+        resultBitBin.textContent = r + g + b;
         const bthRed = parseInt(r, 2).toString(16).padStart(2, "0");
-        const bthBlue = parseInt(b, 2).toString(16).padStart(2, "0");
         const bthGreen = parseInt(g, 2).toString(16).padStart(2, "0");
-        const bth = "#" + bthRed + bthBlue + bthGreen;
+        const bthBlue = parseInt(b, 2).toString(16).padStart(2, "0");
+        const bth = "#" + bthRed + bthGreen + bthBlue;
         // console.log(bth);
-        bgColor.style.backgroundColor = bth;
-        bgColor.style.fontColor = "#cfcfcf"
+        resultBitHex.textContent = bth;
+        result.style.backgroundColor = bth;
     });
 });
 
+window.addEventListener("load", () => {
+    colorPickerAction();
+    maskBitAction();
+});

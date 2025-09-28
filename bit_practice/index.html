@@ -15,12 +15,13 @@
     <section class="picking">
         <div class="window">
             <h2>カラーピッカーから好きな色を選択してください。</h2>
-            カラーピッカー：<input id="colorPicker" type="color">
-            <p>カラーコード：<span id="colorText"></span></p>
+            カラーピッカー：<input id="colorPicker" type="color" value="#5f5f5f">
+            <p>カラーコード(2進数)：<span id="colorPickBin"></span></p>
+            <p>カラーコード(16進数)：<span id="colorPickHex"></span></p>
         </div>
     </section>
     <h2>マスクパターンを2進数で入力してください</h2>
-    <input type="text" name="inputMask" id="inputMask" maxlength="24">
+    <input type="text" name="inputMask" id="inputMask" maxlength="24" value="100000001000000010000000">
     <h2>論理演算子を選択してください</h2>
     <ul>
         <li class="bitCalcs" id="and">AND</li>
@@ -32,24 +33,31 @@
     <div class="colorPattern">
         <p>カラーコード：</p>
         <p id="colorBitRed"></p>
-        <p id="colorBitBlue"></p>
         <p id="colorBitGreen"></p>
+        <p id="colorBitBlue"></p>
     </div>
 
     <div class="colorPattern">
         <p>マスクパターン：</p>
         <p id="maskBitRed"></p>
-        <p id="maskBitBlue"></p>
         <p id="maskBitGreen"></p>
+        <p id="maskBitBlue"></p>
     </div>
 
     <div class="resultPattern">
         <p>演算結果：</p>
         <p id="maskedBitRed"></p>
-        <p id="maskedBitBlue"></p>
         <p id="maskedBitGreen"></p>
+        <p id="maskedBitBlue"></p>
     </div>
-    <p id="bgColor">演算の結果、<span id="maskedBit"></span>になりました。</p>
+
+    <div class="result">
+        <div class="window">
+            <p id="bgColor">演算の結果、以下のようになりました。</p>
+            <p>カラーコード(2進数)：<span id="maskedBitBin"></span></p>
+            <p>カラーコード(16進数)：<span id="maskedBitHex"></span></p>
+        </div>
+    </div>
 </body>
 
 </html>
