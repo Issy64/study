@@ -1,0 +1,5 @@
+*.DS_Store
+DB_practice/.vscode/
+DB_practice/practice.sqlite
+Udemy_handson_001/*
+archives/
