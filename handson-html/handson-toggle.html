@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="css/style-2.css"> -->
+    <title>handson-toggle</title>
+    <style>
+        #toggle1 {
+            display: none;
+        }
+
+        .toggle-outer {
+            background-color: rgba(0, 255, 255, 0.5);
+            border: 1px solid #000;
+            padding: 10px;
+        }
+
+        .toggle-inner {
+            display: none;
+            border: 1px solid #000;
+            border-top: none;
+        }
+
+        #toggle1:checked~.toggle-inner {
+            display: block;
+        }
+
+        #toggle1:checked~.toggle-outer>label>.triangle {
+            display: inline-block;
+            transform: rotate(90deg);
+        }
+
+        .toggle-items {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid rgba(0 0 0 / 0.1);
+            margin-bottom: 40px;
+            padding: 40px 20px 0;
+            /* width: 95%; */
+            /* margin: 0 auto 40px; */
+        }
+
+        .toggle-item {
+            font-size: 12px;
+            padding: 5px 10px;
+            list-style: inside;
+        }
+
+        .incolor {
+            font-weight: bold;
+            background-color: rgb(0 0 0 / 10%);
+            border-top: 1px solid rgb(0 0 0 / 10%);
+            border-bottom: 1px solid rgb(0 0 0 / 10%);
+        }
+
+        .triangle {
+            padding: 0 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="checkbox" id="toggle1" value="クリック">
+    <div class="toggle-outer">
+        <label for="toggle1"><span class="triangle">▶</span>Webデザイナー</label>
+    </div>
+    <div class="toggle-inner">
+        <div class="toggle-items">
+            <div class="incolor toggle-item">
+                <p>会社名</p>
+            </div>
+            <div class="toggle-item">
+                <p>合同会社Issy</p>
+            </div>
+            <div class="incolor toggle-item">
+                <p>応募資格</p>
+            </div>
+            <div class="toggle-item">
+                <p>HTML/CSS,JavaScript,Photoshop,illustratorの基本スキル。実務経験2億年以上の方</p>
+            </div>
+            <div class="incolor toggle-item">
+                <p>給与</p>
+            </div>
+            <div class="toggle-item">
+                <p>年俸5000兆円〜 ※経験・スキルを考慮の上、決定します。</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
